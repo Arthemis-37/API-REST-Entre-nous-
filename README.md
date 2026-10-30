@@ -3,4 +3,4 @@ Pour se connecter avec la base de données en local, il faut créer un fichier .
 - DB_USER
 - DB_PASSWORD
 - DB_HOST
-- PORT
+- DB_PORT
