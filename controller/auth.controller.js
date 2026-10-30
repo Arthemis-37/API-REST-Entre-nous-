@@ -35,3 +35,22 @@ exports.register = async (req, res) => {
     res.status(201).json({ message: 'User created successfully'});
 }
 
+exports.getMe = async (req, res) => {
+    let user = await User.findByPk(req.payload.id, { attributes: ['id', 'username'] });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_KEY);
+    if (!token) {
+        return res.status(401).json({ message: 'You must be logged in' });
+    }
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    return res.status(200).json(user);
+}
+
+exports.logout = async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'You must be logged in' });
+    }
+    return res.status(200).json({ message: 'Logout successful' });
+}
