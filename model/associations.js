@@ -10,5 +10,5 @@ exports.associate = async () => {
     Comment.belongsTo(User, { as: 'author', foreignKey: 'userId' });
 
     Posts.hasMany(Comment, { as: 'comments', foreignKey: 'postId' });
-    Comment.belongsTo(Posts, { foreignKey: 'postId' });
+    Comment.belongsTo(Posts, { as: 'post', foreignKey: 'postId' });
 };

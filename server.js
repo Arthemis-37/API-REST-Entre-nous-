@@ -7,9 +7,9 @@ async function startServer() {
     try {
         const server = http.createServer(app);
 
-        server.on("listening"), () => {
+        server.on("listening", () => {
             console.log(`Server is listening on port 3001`);
-        };
+        });
         await database.authenticate();
         await associate();
         console.log('Connexion à la base de données réussie.');

@@ -2,8 +2,13 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database.js');
 
 const Post = sequelize.define('Post', {
+  id: {
+    type: DataTypes.UUID,
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4
+  },
   content: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(2000),
     allowNull: false
   },
   userId: {
