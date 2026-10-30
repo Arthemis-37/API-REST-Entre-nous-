@@ -39,9 +39,9 @@ exports.register = async (req, res) => {
     }
     const hash = await bcrypt.hash(req.body.password, 10);
 
-    const token = jwt.sign({ id: req.user.id, username: req.body.username }, process.env.JWT_KEY);
+    const token = jwt.sign({ id: req.body.id, username: req.body.username }, process.env.JWT_KEY);
     await User.create({ username: req.body.username, password: hash });
-    res.status(201).json({ token: token, user: { id: req.user.id, username: req.body.username }});
+    res.status(201).json({ token: token, user: { id: req.body.id, username: req.body.username }});
 }
 
 exports.getMe = async (req, res) => {
