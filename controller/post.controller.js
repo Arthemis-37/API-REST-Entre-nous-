@@ -30,3 +30,24 @@ exports.getAllPosts = async (req, res) => {
     });
     res.status(200).json(listPosts);
 }
+
+exports.addComment = async (req, res) => {
+    if (!req.body.content || req.body.content.trim().length < 1 || req.body.content.trim().length > 2000) {
+        return res.status(400).json({ error: 'Content is required and must be between 1 and 2000 characters long' });
+    }
+    const post = await Post.findByPk(req.params.id);
+    if (!post) {
+        return res.status(404).json({ error: 'Post not found' });
+    }
+    const comment = await Comment.create({
+        content: req.body.content,
+        userId: req.payload.id,
+        author: {
+            id: req.payload.id,
+            username: req.payload.username
+        }
+    });
+    post.comments.push(comment);
+    await post.save();
+    res.status(201).json(comment);
+}

@@ -17,7 +17,7 @@ async function startServer() {
         console.log(`Serveur démarré sur le port 3001`);
      
     } catch (error) {
-        console.error('Impossible de se connecter à la base de données');
+        console.error('Impossible de se connecter à la base de données', error);
     }
 }
 
