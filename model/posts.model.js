@@ -9,10 +9,6 @@ const Post = sequelize.define('Post', {
   userId: {
     type: DataTypes.UUID,
     allowNull: false
-  },
-  comments: {
-    type: DataTypes.ARRAY(DataTypes.UUID),
-    allowNull: true
   }
 }, {
   tableName: 'posts'
