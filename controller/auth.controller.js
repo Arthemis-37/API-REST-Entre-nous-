@@ -13,14 +13,14 @@ exports.login = async (req, res) => {
         }
     });
     if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(401).json({ error: 'User not found' });
     }
-    const valid = await bcrypt.verify(user.password, req.body.password);
+    const valid = await bcrypt.compare(req.body.password, user.password);
     if (!valid) {
         return res.status(401).json({ error: 'Login or password incorrect' });
     }
     const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_KEY);
-    return res.status(200).json({ message: 'Login successful', token: token });
+    return res.status(200).json({ token: token, user: { id: user.id, username: user.username }});
 }
 
 exports.register = async (req, res) => {
@@ -39,24 +39,16 @@ exports.register = async (req, res) => {
     }
     const hash = await bcrypt.hash(req.body.password, 10);
 
-    const token = jwt.sign({ id: req.body.id, username: req.body.username }, process.env.JWT_KEY);
-    await User.create({ token: token, user: { id: req.body.id, username: req.body.username }});
-    res.status(201).json({ message: 'User created successfully'});
+    const token = jwt.sign({ id: req.user.id, username: req.body.username }, process.env.JWT_KEY);
+    await User.create({ username: req.body.username, password: hash });
+    res.status(201).json({ token: token, user: { id: req.user.id, username: req.body.username }});
 }
 
 exports.getMe = async (req, res) => {
     let user = await User.findByPk(req.payload.id, { attributes: ['id', 'username'] });
     if (!user) {
-        return res.status(400).json({ error: 'User not found' });
+        return res.status(401).json({ error: 'User not found' });
     }
     
     return res.status(200).json(user);
-}
-
-exports.logout = async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-        return res.status(401).json({ error: 'You must be logged in' });
-    }
-    return res.status(204).json({ message : 'Logout successful' });
 }
